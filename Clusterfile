@@ -1,0 +1,20 @@
+
+$cluster = {
+
+  :nodes => {
+
+    :lamp => {
+      :pub_addr => '10.10.10.10',
+      :pri_addr => '10.10.11.10',
+      :cpus =>1,
+      :chef_client=>{
+        :env => 'dev',
+        :roles=>'role[base],role[db_master],role[webserver]',
+        :orgname=>'hornos'
+      },
+      :forward =>[[80,8080]],
+    },
+
+  },
+
+}
