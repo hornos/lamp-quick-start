@@ -1,0 +1,13 @@
+{
+  "id": "mysql",
+  "prod": {
+    "root": "production",
+    "repl": "production",
+    "debian": "production"
+  },
+  "dev": {
+    "root": "development",
+    "repl": "development",
+    "debian": "development"
+  }
+}

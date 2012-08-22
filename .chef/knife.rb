@@ -12,3 +12,4 @@ cookbook_path            ["#{current_dir}/../cookbooks"]
 cookbook_copyright       "Tom Hornos"
 cookbook_email           "tom.hornos@gmail.com"
 cookbook_license         "apachev2"
+encrypted_data_bag_secret "#{current_dir}/data_bag.key"

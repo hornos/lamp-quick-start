@@ -1,3 +1,8 @@
+Unencrypted
+-----------
+
+The .notencrypted directory should not be githubbed!
+
 Data Bags
 ---------
 

@@ -21,15 +21,6 @@
 
 include_recipe "mysql::client"
 
-# http://www.jasongrimes.org/2012/06/provisioning-a-lamp-stack-with-chef-vagrant-and-ec2-2-of-3/
-# Customization: get passwords from encrypted data bag
-secrets = Chef::EncryptedDataBagItem.load("secrets", "mysql")
-if secrets && mysql_passwords = secrets[node.chef_environment] 
-  node['mysql']['server_debian_password'] = mysql_passwords['debian']
-  node['mysql']['server_root_password']   = mysql_passwords['root']
-  node['mysql']['server_repl_password']   = mysql_passwords['repl']
-end
-
 # generate all passwords
 node.set_unless['mysql']['server_debian_password'] = secure_password
 node.set_unless['mysql']['server_root_password']   = secure_password
