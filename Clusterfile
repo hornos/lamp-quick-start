@@ -4,17 +4,27 @@ $cluster = {
   :nodes => {
 
     :lamp => {
-      :pub_addr => '10.10.10.10',
-      :pri_addr => '10.10.11.10',
+      :hostonly => '10.10.10.10',
       :cpus =>1,
       :chef_client=>{
-        :env => 'dev',
+        :environmnet => 'dev',
         :roles=>'role[base],role[db_master],role[webserver]',
         :orgname=>'hornos'
       },
       :forward =>[[80,8080]],
     },
 
-  },
+    :lamp1 => {
+      :hostonly => '10.10.10.11',
+      :cpus =>1,
+      :chef_client=>{
+        :environmnet => 'dev',
+        :roles=>'role[base],role[db_master],role[webserver]',
+        :orgname=>'hornos'
+      },
+      :forward =>[[81,8081]],
+    },
+
+  }
 
 }

@@ -31,6 +31,7 @@ Vagrant::Config.run do |config|
 
   # configure nodes
   $cluster[:nodes].each do |node,opts|
+    puts "Load configuration for #{node}"
     config.vm.define node.to_s do |cfg|
       # defaults
       vm_default[cfg]
@@ -38,8 +39,14 @@ Vagrant::Config.run do |config|
       cfg.vm.customize ["modifyvm", :id, "--cpus", opts[:cpus]]
 
       cfg.vm.host_name = node.to_s
-      cfg.vm.network :hostonly, opts[:pri_addr]
-      # cfg.vm.network :bridged, opts[:pub_addr]
+      # cfg.vm.base_mac = '080037E7B25D'
+
+      if not opts[:hostonly].nil? then
+        cfg.vm.network :hostonly, opts[:hostonly]
+      end
+      if not opts[:bridged].nil? then
+        cfg.vm.network :bridged, opts[:bridged]
+      end
 
       # forwarding
       if not opts[:forward].nil? then
@@ -55,14 +62,14 @@ Vagrant::Config.run do |config|
       if opts[:chef_client] then
         orgname = opts[:chef_client][:orgname]
 
-        config.vm.provision :chef_client do |chef|
+        cfg.vm.provision :chef_client do |chef|
           chef.chef_server_url = "https://api.opscode.com/organizations/#{orgname}"
           chef.validation_key_path = ".chef/#{orgname}-validator.pem"
           chef.validation_client_name = "#{orgname}-validator"
           chef.encrypted_data_bag_secret_key_path = ".chef/data_bag.key"
           chef.node_name = "#{node.to_s}"
           chef.log_level = :debug
-          chef.environment = opts[:chef_client][:env]
+          chef.environment = opts[:chef_client][:environment]
 
           if not opts[:chef_client][:roles].nil? then 
             opts[:chef_client][:roles].gsub("\n",'').gsub(/\s+/,'').split(",").each do |role|
@@ -74,7 +81,7 @@ Vagrant::Config.run do |config|
 
         end # :chef_client
       else
-        config.vm.provision :chef_solo do |chef|
+        cfg.vm.provision :chef_solo do |chef|
           # chef_default[chef]
           chef.cookbooks_path = opts[:cookbooks_path].nil? ? "cookbooks" : opts[:cookbooks_path]
 
