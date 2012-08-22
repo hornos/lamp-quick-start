@@ -3,4 +3,5 @@
 *.key
 *.pub
 data_bags/users/*
+.vagrant
 
