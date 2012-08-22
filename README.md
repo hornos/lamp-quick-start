@@ -71,24 +71,18 @@ git init
 git add .
 git commit -m 'init'
 script/get_cookbooks
-
 script/upload_cookbooks
 script/upload_environments
 script/upload_roles
-
 script/create_sysadmin
 script/upload_users
 script/create_databag_key
-
-# prepare data_bags/.notencrypted/mysql.json
-# will create encrypted secrets::mysql
+(prepare data_bags/.notencrypted/mysql.json)
+(will create encrypted secrets::mysql)
 script/encrypt_data_bag mysql
 script/download_encrypted_data_bag mysql
-
-# if you want to edit
+(if you want to edit)
 script/edit_encrypted_data_bag mysql
-
-
 
 References
 ==========
