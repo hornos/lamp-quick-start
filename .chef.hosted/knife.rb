@@ -1,11 +1,11 @@
 current_dir = File.dirname(__FILE__)
 log_level                :info
 log_location             STDOUT
-node_name                "macbook"
-client_key               "#{current_dir}/macbook.pem"
-validation_client_name   "chef-validator"
-validation_key           "#{current_dir}/chef-validator.pem"
-chef_server_url          "http://10.10.10.10:4000"
+node_name                "hornos"
+client_key               "#{current_dir}/hornos.pem"
+validation_client_name   "hornos-validator"
+validation_key           "#{current_dir}/hornos-validator.pem"
+chef_server_url          "https://api.opscode.com/organizations/hornos"
 cache_type               'BasicFile'
 cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
 cookbook_path            ["#{current_dir}/../cookbooks"]

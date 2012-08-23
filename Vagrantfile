@@ -63,9 +63,19 @@ Vagrant::Config.run do |config|
         orgname = opts[:chef_client][:orgname]
 
         cfg.vm.provision :chef_client do |chef|
-          chef.chef_server_url = "https://api.opscode.com/organizations/#{orgname}"
+          if opts[:chef_client][:server_url].nil? then
+            chef.chef_server_url = "https://api.opscode.com/organizations/#{orgname}"
+          else
+            chef.chef_server_url = opts[:chef_client][:server_url]
+          end
+
           chef.validation_key_path = ".chef/#{orgname}-validator.pem"
-          chef.validation_client_name = "#{orgname}-validator"
+
+          if opts[:chef_client][:validation_client_name].nil? then
+            chef.validation_client_name = "#{orgname}-validator"
+          else
+            chef.validation_client_name = opts[:chef_client][:validation_client_name]
+          end
           chef.encrypted_data_bag_secret_key_path = ".chef/data_bag.key"
           chef.node_name = "#{node.to_s}"
           chef.log_level = :debug

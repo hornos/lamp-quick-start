@@ -2,4 +2,4 @@
 
 echo "Upload cookbooks?"
 read
-knife cookbook upload -all
+knife cookbook upload --all

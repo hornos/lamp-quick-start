@@ -76,7 +76,7 @@ Init
 * script/upload_roles
 * script/create_sysadmin
 * script/upload_users
-* script/create_databag_key
+* script/create_data_bag_key
 * (prepare data_bags/.notencrypted/mysql.json)
 * (will create encrypted secrets::mysql)
 * script/encrypt_data_bag mysql
