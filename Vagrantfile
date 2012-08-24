@@ -69,24 +69,21 @@ Vagrant::Config.run do |config|
             chef.chef_server_url = opts[:chef_client][:server_url]
           end
 
-          chef.validation_key_path = ".chef/#{orgname}-validator.pem"
-
           if opts[:chef_client][:validation_client_name].nil? then
             chef.validation_client_name = "#{orgname}-validator"
+            chef.validation_key_path = ".chef/#{orgname}-validator.pem"
           else
             chef.validation_client_name = opts[:chef_client][:validation_client_name]
+            chef.validation_key_path = ".chef/#{opts[:chef_client][:validation_client_name]}.pem"
           end
+
           chef.encrypted_data_bag_secret_key_path = ".chef/data_bag.key"
           chef.node_name = "#{node.to_s}"
           chef.log_level = :debug
           chef.environment = opts[:chef_client][:environment]
 
           if not opts[:chef_client][:roles].nil? then 
-            opts[:chef_client][:roles].gsub("\n",'').gsub(/\s+/,'').split(",").each do |role|
-              t,r = role.gsub("["," ").gsub("]","").split()
-              chef.add_role r if t == "role"
-              chef.add_recipe r if t == "recipe"
-            end
+            chef.run_list = opts[:chef_client][:roles].split(",")
           end
 
         end # :chef_client
@@ -99,12 +96,8 @@ Vagrant::Config.run do |config|
           chef.log_level = :debug
 
           # process role string
-          if not opts[:roles].nil? then 
-            opts[:roles].gsub("\n",'').gsub(/\s+/,'').split(",").each do |role|
-              t,r = role.gsub("["," ").gsub("]","").split()
-              chef.add_role r if t == "role"
-              chef.add_recipe r if t == "recipe"
-            end
+          if not opts[:chef_solo][:roles].nil? then 
+            chef.run_list = opts[:chef_solo][:roles].split(",")
           end
 
           # access from chef node[:]
