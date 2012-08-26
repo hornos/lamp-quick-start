@@ -3,6 +3,7 @@
 #
 
 
+# load clusterfile
 CLUSTERFILE = 'Clusterfile'
 
 if File.exists? CLUSTERFILE + ".yaml"
