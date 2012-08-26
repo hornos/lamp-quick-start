@@ -2,7 +2,18 @@
 # vi: set ft=ruby :
 #
 
-Kernel.load 'Clusterfile'
+
+CLUSTERFILE = 'Clusterfile'
+
+if File.exists? CLUSTERFILE + ".yaml"
+  $cluster = YAML.load_file(CLUSTERFILE + ".yaml")
+elsif File.exists? CLUSTERFILE
+  Kernel.load 'Clusterfile'
+else
+  STDERR.puts "#{CLUSTERFILE} not found"
+  exit 1
+end
+
 
 Vagrant::Config.run do |config|
 
@@ -54,8 +65,8 @@ Vagrant::Config.run do |config|
       end
 
       # vb guest version check
-      cfg.vbguest.auto_update = false
-      cfg.vbguest.no_remote   = true
+      # cfg.vbguest.auto_update = false
+      # cfg.vbguest.no_remote   = true
 
 
       # provision by chef solo
