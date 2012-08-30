@@ -1,19 +1,30 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 #
-
-
 # load clusterfile
-CLUSTERFILE = 'Clusterfile'
 
-if File.exists? CLUSTERFILE + ".yaml"
-  $cluster = YAML.load_file(CLUSTERFILE + ".yaml")
-elsif File.exists? CLUSTERFILE
-  Kernel.load 'Clusterfile'
-else
-  STDERR.puts "#{CLUSTERFILE} not found"
-  exit 1
+begin
+  file = 'Clusterfile.yml'
+  puts "Clusterfile: #{file}"
+  if (file.end_with?(".yml"))
+    $cluster = YAML.load_file file
+  elsif (file.end_with?(".json"))
+    $cluster = JSON.parse(File.read(file))
+  else
+    STDERR.puts "ERROR: Unknown file type, please use a file ending with either '.json' or '.yml'."
+    exit(-1)
+  end
+rescue JSON::ParserError => e
+  STDERR.puts e.message
+  STDERR.puts "ERROR: Parsing error in the infrastructure file provided."
+  exit(-1)
+rescue Exception => e
+  STDERR.puts e.message
+  STDERR.puts "ERROR: No infrastructure .json or .yml file provided."
+  exit(-1)
 end
+
+puts $cluster.inspect
 
 
 Vagrant::Config.run do |config|
@@ -43,7 +54,7 @@ Vagrant::Config.run do |config|
 
   # configure nodes
   $cluster[:nodes].each do |node,opts|
-    puts "Load configuration for #{node}"
+    puts "Cluster configurtion: #{node}"
     config.vm.define node.to_s do |cfg|
       # defaults
       vm_default[cfg]
@@ -91,12 +102,19 @@ Vagrant::Config.run do |config|
 
           chef.encrypted_data_bag_secret_key_path = ".chef/data_bag.key"
           chef.node_name = "#{node.to_s}"
-          chef.log_level = :debug
+          if not opts[:log_level].nil? then
+            chef.log_level = opts[:log_level]
+          end
           chef.environment = opts[:chef_client][:environment]
 
-          if not opts[:chef_client][:roles].nil? then 
-            chef.run_list = opts[:chef_client][:roles].split(",")
+          if not opts[:roles].nil? then 
+            chef.run_list = opts[:roles].split(",")
           end
+
+          chef.json = {
+            :cluster => $cluster,
+            :host => opts
+          }
 
         end # :chef_client
       else
@@ -108,8 +126,8 @@ Vagrant::Config.run do |config|
           chef.log_level = :debug
 
           # process role string
-          if not opts[:chef_solo][:roles].nil? then 
-            chef.run_list = opts[:chef_solo][:roles].split(",")
+          if not opts[:roles].nil? then 
+            chef.run_list = opts[:roles].split(",")
           end
 
           # access from chef node[:]

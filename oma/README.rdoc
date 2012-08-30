@@ -1,0 +1,6 @@
+= oma
+
+Describe your project here
+
+:include:oma.rdoc
+
