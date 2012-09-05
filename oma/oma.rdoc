@@ -1,5 +1,0 @@
-= oma
-
-Generate this with
-    oma rdoc
-After you have described your command line interface
